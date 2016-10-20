@@ -39,6 +39,7 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
 
+    private ArrayAdapter<String> mForecastAdapter;
     public ForecastFragment() {
     }
 
@@ -81,7 +82,7 @@ public class ForecastFragment extends Fragment {
         weatherList.add("Tue-Rainy-25/63");
         weatherList.add("Tomorrow-Sunny-88/63");
         weatherList.add("Tomorrow-Sunny-88/63");
-        ArrayAdapter<String> mForecastAdapter = new ArrayAdapter<String>(
+        mForecastAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 R.layout.list_item_forecast,
                 R.id.list_item_forecast_textview,
@@ -111,7 +112,6 @@ public class ForecastFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are available at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                String urlKey = params[0];
 
 
                 try {
@@ -130,7 +130,7 @@ public class ForecastFragment extends Fragment {
                             .build();
                     //url = new URL("?q=94043&mode=json&units=metric&cnt=7");
                     url = new URL(builtUri.toString());
-                    Log.v(LOG_TAG, url.toString());
+                    //Log.v(LOG_TAG, url.toString());
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
@@ -179,7 +179,7 @@ public class ForecastFragment extends Fragment {
                     }
                 }
             }
-            Log.v(LOG_TAG, forecastJsonStr);
+            //Log.v(LOG_TAG, forecastJsonStr);
             try {
                 return getWeatherDataFromJson(forecastJsonStr, numDays);
             } catch (JSONException e) {
@@ -192,6 +192,16 @@ public class ForecastFragment extends Fragment {
         /* The date/time conversion code is going to be moved outside the asynctask later,
          * so for convenience we're breaking it out into its own method now.
          */
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            mForecastAdapter.clear();
+            if ( result != null) {
+
+                mForecastAdapter.addAll(result);
+            }
+        }
+
         private String getReadableDateString(long time) {
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
