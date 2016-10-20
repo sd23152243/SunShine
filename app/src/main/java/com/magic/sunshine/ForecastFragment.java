@@ -4,6 +4,7 @@ package com.magic.sunshine;
  * Created by 123016 on 2016/10/13.
  */
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +43,7 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
 
     private ArrayAdapter<String> mForecastAdapter;
+
     public ForecastFragment() {
     }
 
@@ -70,7 +74,7 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        List<String> weatherList = new ArrayList<String>();
+        final List<String> weatherList = new ArrayList<String>();
         weatherList.add("Today-Sunny-88/63");
         weatherList.add("Tomorrow-Sunny-88/63");
         weatherList.add("Mon-Sunny-25/63");
@@ -89,6 +93,16 @@ public class ForecastFragment extends Fragment {
                 weatherList);
         ListView lview = (ListView) rootView.findViewById(R.id.listview_forecast);
         lview.setAdapter(mForecastAdapter);
+        lview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Context context = getActivity().getApplicationContext();
+                int duration = Toast.LENGTH_SHORT;
+                String text = weatherList.get(position);
+                Toast toast = Toast.makeText(context,text,duration);
+                toast.show();
+            }
+        });
         return rootView;
     }
 
@@ -291,9 +305,9 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            for (String s : resultStrs) {
+            /*for (String s : resultStrs) {
                 Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
+            }*/
             return resultStrs;
 
         }
